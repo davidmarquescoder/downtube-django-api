@@ -15,7 +15,7 @@ class DowntubeController(APIView):
 
         try:
             video_info = self.get_video_info(video_url)
-            
+
             if 'info' in request.query_params:
                 return Response(video_info)
 
@@ -33,6 +33,13 @@ class DowntubeController(APIView):
 
     def get_video_info(self, url):
         video = YouTube(url)
+        video_streams = video.streams.filter(file_extension='mp4', resolution='1080p').first()
+
+        resolutions = []
+
+        for stream in video.streams.filter(file_extension='mp4').desc():
+            if stream.resolution and stream.resolution not in resolutions:
+                resolutions.append(stream.resolution)
 
         info = {
             "title": video.title,
@@ -40,7 +47,13 @@ class DowntubeController(APIView):
             "views": video.views,
             "author": video.author,
             "description": video.description,
-            "thumbnail_url": video.thumbnail_url
+            "thumbnail_url": video.thumbnail_url,
+            "publish_date": video.publish_date,
+            "filesize_mb": video_streams.filesize_mb,
+            "file_type": video_streams.mime_type,
+            "resolution": video_streams.resolution,
+            "resolutions": resolutions,
+            "fps": video_streams.fps,
         }
 
         return info
