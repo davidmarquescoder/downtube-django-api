@@ -19,13 +19,14 @@ class DowntubeController(APIView):
             if 'info' in request.query_params:
                 return Response(video_info)
 
-            video_stream, video_title = self.download(video_url, download_type)
+            video_stream, video_title, video_size = self.download(video_url, download_type)
 
             if not video_stream:
                 return Response({"error": "Falha ao processar o vídeo."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
             response = StreamingHttpResponse(video_stream, content_type='video/mp4' if download_type != 'audio' else 'audio/mpeg')
             response['Content-Disposition'] = f'attachment; filename="{video_title}.{"mp4" if download_type != "audio" else "mp3"}"'
+            response['Content-Length'] = str(video_size)
 
             return response
         except Exception as e:
@@ -69,5 +70,6 @@ class DowntubeController(APIView):
             stream = video.streams.get_highest_resolution()
 
         video_stream = requests.get(stream.url, stream=True)
+        video_size = video_stream.headers.get('Content-Length', 0)  # Obtém o tamanho do arquivo
 
-        return video_stream.iter_content(chunk_size=8192), video.title
+        return video_stream.iter_content(chunk_size=8192), video.title, video_size
