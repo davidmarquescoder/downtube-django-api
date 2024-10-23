@@ -8,7 +8,7 @@ import requests
 class DowntubeController(APIView):
     def get(self, request):
         video_url = request.query_params.get('video_url')
-        download_type = request.query_params.get('download_type', 'high')  # 'high', 'low', ou 'audio'
+        download_type = request.query_params.get('download_type', 'default')  #  "144p", "240p", "360p", "480p", "720p", "1080p", ou "audio"
 
         if not video_url:
             return Response({"error": "A URL do vídeo é obrigatória."}, status=status.HTTP_400_BAD_REQUEST)
@@ -62,14 +62,35 @@ class DowntubeController(APIView):
     def download(self, url, download_type):
         video = YouTube(url)
 
-        if download_type == 'low':
-            stream = video.streams.get_lowest_resolution()
-        elif download_type == 'audio':
-            stream = video.streams.get_audio_only()
-        else:
-            stream = video.streams.get_highest_resolution()
+        # VIDEO
+        match(download_type):
+            case '144p':
+                stream = video.streams.filter(file_extension='mp4', resolution='144p').first()
+
+            case '240p':
+                stream = video.streams.filter(file_extension='mp4', resolution='240p').first()
+
+            case '360p':
+                stream = video.streams.filter(file_extension='mp4', resolution='360p').first()
+
+            case '480p':
+                stream = video.streams.filter(file_extension='mp4', resolution='480p').first()
+
+            case '720p':
+                stream = video.streams.filter(file_extension='mp4', resolution='720p').first()
+
+            case '1080p':
+                stream = video.streams.filter(file_extension='mp4', resolution='1080p').first()
+
+            # AUDIO
+            case 'audio':
+                stream = video.streams.get_audio_only()
+            
+            # SE NÃO
+            case _:
+                stream = video.streams.get_highest_resolution()
 
         video_stream = requests.get(stream.url, stream=True)
-        video_size = video_stream.headers.get('Content-Length', 0)  # Obtém o tamanho do arquivo
+        video_size = video_stream.headers.get('Content-Length', 0)
 
         return video_stream.iter_content(chunk_size=8192), video.title, video_size
