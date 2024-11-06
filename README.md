@@ -1,24 +1,24 @@
-# Instalando e Configurando o projeto
+# Installing and configuring the project
 
-#### Criando Ambiente virtual python
+#### Creating python virtual environment
 ``` shell
 python -m venv venv
 ```
 
-#### Ativando Ambiente virtual python
+#### Activating python virtual environment
 ``` shell
 ./venv/Scripts/Activate.ps1
 ```
 
 ---
 
-#### Instalando todas as dependências
+#### Installing all dependencies
 ``` shell
 pip install -r requirements.txt
 ```
 
-#### Atualizando as dependências
-Se for adicionado alguma nova depedência ao projeto, rode o comando abaixo
+#### Updating dependencies
+If any new dependencies are added to the project, run the following command
 
 ``` shell
 pip freeze > requirements.txt
@@ -26,20 +26,20 @@ pip freeze > requirements.txt
 
 ---
 
-#### Subindo o server
-Na minha máquina não estou conseguindo rodar o server na porta padrão do django (8000) talvez essa porta já esteja sendo usada para outra finalidade, então vamos rodar na porta 3333.
+#### Bringing up the server
+On my machine I'm not able to run the server on django's default port (8000). Perhaps this port is already being used for another purpose, so let's run it on port 3333.
 
 ``` shell
 python manage.py runserver 3333
 ```
 
 ---
-#### Rotas
+#### Routes
 
-Rota para fazer download de um vídeo do youtube:
+Route to download a youtube video:
 
 - `GET download/?video_url=https://MeuLinkDoYoutube.com`
 
-Exemplo de uso:
+Example of use:
 
 - `http://localhost:3333/download/?video_url=https://www.youtube.com/watch/?v=Hr1UrJfzJ54`
