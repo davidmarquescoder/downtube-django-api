@@ -1,3 +1,9 @@
+<div align="center">
+  <span>🌍</span>
+  <a href="https://github.com/davidmarquescoder/downtube-django-api/">ENGLISH</a> |
+  <a href="https://github.com/davidmarquescoder/downtube-django-api/tree/doc/pt-br">PT-BR</a>
+</div>
+
 # Instalando e Configurando o projeto
 
 #### Criando Ambiente virtual python
